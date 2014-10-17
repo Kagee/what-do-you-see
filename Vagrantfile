@@ -22,6 +22,13 @@ Vagrant.configure("2") do |config|
   # https://github.com/smdahlen/vagrant-digitalocean
   # Use "DO_TOKEN=<token> vagrant up --provider=digital_ocean" to setup a
   # droplet on DigitalOcean, not a Virtualbox/Vmware guest.
+  # vagrant destroy: Destroys the droplet instance.
+  # vagrant halt: Powers off the droplet instance.
+  # vagrant provision: Runs the configured provisioners and rsyncs any specified config.vm.synced_folder.
+  # vagrant reload: Reboots the droplet instanc.
+  # vagrant rebuild: Destroys the droplet instance and recreates it with the 
+  #   same IP address is was assigned to previously.
+  # vagrant status: Outputs the status (active, off, not created) for the droplet instance.
   config.vm.provider :digital_ocean do |provider, override|
     override.ssh.private_key_path = '~/.ssh/id_rsa'
     override.vm.box = 'digital_ocean'
