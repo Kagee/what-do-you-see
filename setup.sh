@@ -2,7 +2,7 @@
 set -e
 set -x
 
-VMXNET=$(cat /proc/modules | grep vmxnet; echo $?)
+VMXNET=$(cat /proc/modules | grep -q vmxnet; echo $?)
 if [ $VMXNET -eq 0 ]; then
   echo "On virtual machine, setting up apt proxy"
   GATEWAY=$(ip route show | grep ^default | cut -d' ' -f 3)
