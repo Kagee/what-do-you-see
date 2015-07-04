@@ -10,8 +10,8 @@
 Vagrant.configure("2") do |config|
 
   # Ubuntu 14.04 Server 64-bit box supporting VirtualBox and VMware providers. 
-  # For other boxes, see https://vagrantcloud.com/box-cutter
-  config.vm.box = "box-cutter/ubuntu1404"
+  # For other boxes, see https://vagrantcloud.com/boxcutter
+  config.vm.box = "boxcutter/ubuntu1404"
   config.vm.hostname = "vagrant.example.com"
   config.vm.provision "shell", path: 'setup.sh'
   config.vm.provision "shell", path: 'setup-user.sh', privileged: false
@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
   # config.vm.network "forwarded_port", guest: 80, host: 8080
   # config.vm.synced_folder '.', '/home/vagrant/setup'
 
-  # https://github.com/smdahlen/vagrant-digitalocean
+  # https://github.com/smdahlen/vagrant-digitalocean/
   # Use "DO_TOKEN=<token> vagrant up --provider=digital_ocean" to setup a
   # droplet on DigitalOcean, not a Virtualbox/Vmware guest.
   # vagrant destroy: Destroys the droplet instance.
@@ -35,8 +35,11 @@ Vagrant.configure("2") do |config|
     override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
     # https://cloud.digitalocean.com/settings/applications > Personal Access Tokens
     provider.token = ENV['DO_TOKEN']
-    provider.image = 'Ubuntu 14.04 x64'
+    # vagrant digitalocean-list images $DIGITAL_OCEAN_TOKEN
+    provider.image = 'ubuntu-14-04-x64'
+    # vagrant digitalocean-list regions $DIGITAL_OCEAN_TOKEN
     provider.region = 'ams1'
+    # vagrant digitalocean-list sizes $DIGITAL_OCEAN_TOKEN
     provider.size = '512mb'
   end
 end
