@@ -3,20 +3,20 @@
 
 Vagrant.configure("2") do |config|
 
-  config.vm.define "gateway" do |gateway|
+  config.vm.define "mitm" do |mitm|
     # Ubuntu 15.10 Server 64-bit box supporting VirtualBox and VMware providers. 
     #gateway.vm.box = "boxcutter/ubuntu1510"
-    gateway.vm.box = "ubuntu/wily64" # Supports systemd-network interfacenames,
+    mitm.vm.box = "ubuntu/wily64" # Supports systemd-network interfacenames,
                                      # required for private network
-    gateway.vm.hostname = "gateway"
-    gateway.vm.provision "shell", path: 'apt-proxy.sh'
-    gateway.vm.provision "shell", path: 'gateway.sh'
+    mitm.vm.hostname = "mitm"
+    mitm.vm.provision "shell", path: 'apt-proxy.sh'
+    mitm.vm.provision "shell", path: 'mitm.sh'
     #gateway.vm.network "public_network"
-    gateway.vm.network "private_network", ip: "192.168.159.2"
+    mitm.vm.network "private_network", ip: "192.168.159.2"
     # gateway.vm.provision "shell", path: 'setup-user.sh', privileged: false
     # gateway.vm.network "forwarded_port", guest: 80, host: 8080
     # gateway.vm.synced_folder '.', '/home/vagrant/setup'
-    gateway.vm.provision :reload # https://github.com/aidanns/vagrant-reload
+    mitm.vm.provision :reload # https://github.com/aidanns/vagrant-reload
   end
 
   config.vm.define "visitor" do |visitor|
