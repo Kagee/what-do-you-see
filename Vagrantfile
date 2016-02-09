@@ -27,12 +27,12 @@ Vagrant.configure("2") do |config|
     visitor.vm.hostname = "visitor"
     visitor.vm.provision "shell", path: 'apt-proxy.sh'
     visitor.vm.provision "shell", path: 'visitor.sh'
-    visitor.vm.network "private_network", ip: "192.168.159.4"
+    # We use data/visitor-eth1.cfg for network config
+    visitor.vm.network "private_network", ip: "192.168.159.4", auto_config: false
     # visitor.vm.provision "shell", path: 'setup-user.sh', privileged: false
     # visitor.vm.network "forwarded_port", guest: 80, host: 8080
     # visitor.vm.synced_folder '.', '/home/vagrant/setup'
     visitor.vm.provision :reload # https://github.com/aidanns/vagrant-reload
-    visitor.vm.provision "shell", path: 'config-network-visitor.sh', run: "always"
   end
 
 end

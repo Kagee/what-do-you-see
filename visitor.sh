@@ -13,9 +13,10 @@ apt-get -qq --yes upgrade
 # Some standard tools
 apt-get install -qq --yes language-pack-nb vim
 
-cd /root
+# Configure network
+cp /vagrant/data/visitor-eth1.cfg /etc/network/interfaces.d/
 
-echo $HOSTNAME
+ifup eth1
 
 # to avoid unnessesary traffic
 #if [ -d "/vagrant/repo" ]; then
