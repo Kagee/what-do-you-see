@@ -1,45 +1,38 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Use vagrant up to setup the box.
-# vagrant ssh if you need to edit anything on the server
-# vagrant destroy to start over from scratch
-# As i standard with vagrant machines, the
-# vagrant user has passwordless sudo access on the guest machine
-
 Vagrant.configure("2") do |config|
 
-  # Ubuntu 14.04 Server 64-bit box supporting VirtualBox and VMware providers. 
-  # For other boxes, see https://vagrantcloud.com/boxcutter
-  config.vm.box = "boxcutter/ubuntu1404"
-  config.vm.hostname = "vagrant.example.com"
-  config.vm.provision "shell", path: 'setup.sh'
-  config.vm.provision "shell", path: 'setup-user.sh', privileged: false
-
-  # config.vm.network "forwarded_port", guest: 80, host: 8080
-  # config.vm.synced_folder '.', '/home/vagrant/setup'
-
-  # https://github.com/smdahlen/vagrant-digitalocean/
-  # Use "DO_TOKEN=<token> vagrant up --provider=digital_ocean" to setup a
-  # droplet on DigitalOcean, not a Virtualbox/Vmware guest.
-  # vagrant destroy: Destroys the droplet instance.
-  # vagrant halt: Powers off the droplet instance.
-  # vagrant provision: Runs the configured provisioners and rsyncs any specified config.vm.synced_folder.
-  # vagrant reload: Reboots the droplet instanc.
-  # vagrant rebuild: Destroys the droplet instance and recreates it with the 
-  #   same IP address is was assigned to previously.
-  # vagrant status: Outputs the status (active, off, not created) for the droplet instance.
-  config.vm.provider :digital_ocean do |provider, override|
-    override.ssh.private_key_path = '~/.ssh/id_rsa'
-    override.vm.box = 'digital_ocean'
-    override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
-    # https://cloud.digitalocean.com/settings/applications > Personal Access Tokens
-    provider.token = ENV['DO_TOKEN']
-    # vagrant digitalocean-list images $DIGITAL_OCEAN_TOKEN
-    provider.image = 'ubuntu-14-04-x64'
-    # vagrant digitalocean-list regions $DIGITAL_OCEAN_TOKEN
-    provider.region = 'ams1'
-    # vagrant digitalocean-list sizes $DIGITAL_OCEAN_TOKEN
-    provider.size = '512mb'
+  config.vm.define "gateway" do |gateway|
+    # Ubuntu 15.10 Server 64-bit box supporting VirtualBox and VMware providers. 
+    #gateway.vm.box = "boxcutter/ubuntu1510"
+    gateway.vm.box = "ubuntu/wily64" # Supports systemd-network interfacenames,
+                                     # required for private network
+    gateway.vm.hostname = "gateway"
+    gateway.vm.provision "shell", path: 'apt-proxy.sh'
+    gateway.vm.provision "shell", path: 'gateway.sh'
+    #gateway.vm.network "public_network"
+    gateway.vm.network "private_network", ip: "192.168.159.2"
+    # gateway.vm.provision "shell", path: 'setup-user.sh', privileged: false
+    # gateway.vm.network "forwarded_port", guest: 80, host: 8080
+    # gateway.vm.synced_folder '.', '/home/vagrant/setup'
+    gateway.vm.provision :reload # https://github.com/aidanns/vagrant-reload
   end
+
+  config.vm.define "visitor" do |visitor|
+    # Ubuntu 15.10 Server 64-bit box supporting VirtualBox and VMware providers. 
+    # visitor.vm.box = "boxcutter/ubuntu1510"
+    visitor.vm.box = "ubuntu/wily64" # Supports systemd-network interfacenames,
+                                     # required for private network
+    visitor.vm.hostname = "visitor"
+    visitor.vm.provision "shell", path: 'apt-proxy.sh'
+    visitor.vm.provision "shell", path: 'visitor.sh'
+    visitor.vm.network "private_network", ip: "192.168.159.4"
+    # visitor.vm.provision "shell", path: 'setup-user.sh', privileged: false
+    # visitor.vm.network "forwarded_port", guest: 80, host: 8080
+    # visitor.vm.synced_folder '.', '/home/vagrant/setup'
+    visitor.vm.provision :reload # https://github.com/aidanns/vagrant-reload
+    visitor.vm.provision "shell", path: 'config-network-visitor.sh', run: "always"
+  end
+
 end
