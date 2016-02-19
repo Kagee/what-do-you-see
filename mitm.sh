@@ -14,12 +14,12 @@ apt-get -qq --yes upgrade
 apt-get install -qq --yes language-pack-nb vim
 
 # Set up iptables before we install iptables-persistent
-iptables --table nat    --add POSTROUTING --out-interface eth0 --jump MASQUERADE
-iptables --table filter --add FORWARD --protocol tcp --match multiport --dports 22,53,80,443,8080,8443 --jump ACCEPT
-iptables --table filter --add FORWARD --protocol udp --match multiport --dports 53                     --jump ACCEPT
-iptables --table filter --add FORWARD --protocol tcp --match multiport --sports 22,53,80,443,8080,8443 --jump ACCEPT
-iptables --table filter --add FORWARD --protocol udp --match multiport --sports 53                     --jump ACCEPT
-iptables --table filter --policy-P FORWARD DROP
+iptables --table nat    --append POSTROUTING --out-interface eth0 --jump MASQUERADE
+iptables --table filter --append FORWARD --protocol tcp --match multiport --dports 22,53,80,443,8080,8443 --jump ACCEPT
+iptables --table filter --append FORWARD --protocol udp --match multiport --dports 53                     --jump ACCEPT
+iptables --table filter --append FORWARD --protocol tcp --match multiport --sports 22,53,80,443,8080,8443 --jump ACCEPT
+iptables --table filter --append FORWARD --protocol udp --match multiport --sports 53                     --jump ACCEPT
+iptables --table filter --policy FORWARD DROP
 
 apt-get install --yes iptables-persistent
 
